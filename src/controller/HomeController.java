@@ -14,6 +14,7 @@ import transaction.Authentication;
 import transaction.Transaction;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Optional;
@@ -27,13 +28,18 @@ public class HomeController implements Observer{
     private Connexion connexion = null;
 
     public HomeController() {
+        openConnection();
+    }
+
+    private String openConnection() {
         try {
             this.connexion = new Connexion();
             System.out.println(this.connexion.receive());
         } catch (IOException e) {
-            e.printStackTrace();
-            log(e.getMessage());
+//            e.printStackTrace();
+            return (e.getMessage());
         }
+        return "Connection established";
     }
 
 
@@ -45,13 +51,27 @@ public class HomeController implements Observer{
 
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(Settings::setSettings);
+        log(openConnection());
     }
 
     public void connect() {
+
+        this.logs.setText("");
+
+        if (this.connexion == null) {
+            log(this.openConnection());
+        }
+
         if (this.connexion != null) {
-            Authentication authentication = new Authentication(connexion, username.getText(), password.getText());
-            authentication.addObserver(this);
-            Platform.runLater(authentication);
+            if (!Objects.equals(username.getText(), "") && !Objects.equals(password.getText(), "")) {
+                Authentication authentication = new Authentication(connexion, username.getText(), password.getText());
+                authentication.addObserver(this);
+                Platform.runLater(authentication);
+            } else {
+                log("Provide your credentials");
+            }
+        } else {
+            log("Cannot connect to server");
         }
     }
 

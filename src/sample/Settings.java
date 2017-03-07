@@ -9,7 +9,7 @@ import java.net.UnknownHostException;
  */
 public class Settings {
 
-    private static int port = 1086;
+    private static int port = 1096;
 
     private static InetAddress ipServer;
 
@@ -21,7 +21,7 @@ public class Settings {
         }
     }
 
-    private static String host = getIpServer().getHostName() + ":" + getPort();
+    private static String host = getHost();
 
 
     public static InetAddress getIpServer() {
@@ -55,6 +55,6 @@ public class Settings {
     }
 
     public static String getHost() {
-        return host;
+        return getIpServer().getHostName() + ":" + getPort();
     }
 }
