@@ -9,7 +9,7 @@ import java.net.UnknownHostException;
  */
 public class Settings {
 
-    private static int port = 110;
+    private static int port = 1086;
 
     private static InetAddress ipServer;
 

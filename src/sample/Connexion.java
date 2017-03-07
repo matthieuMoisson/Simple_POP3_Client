@@ -18,12 +18,6 @@ public class Connexion {
         Socket clientSocket = new Socket(Settings.getIpServer(), Settings.getPort());
         is = clientSocket.getInputStream();
         os = clientSocket.getOutputStream();
-
-    }
-
-    public Message authentication(String username, String password) {
-        send(new Message(Command.APOP, username + " " + password));
-        return receive();
     }
 
     /**
@@ -31,7 +25,7 @@ public class Connexion {
      *
      * @param message Message to sent
      */
-    private void send(Message message) {
+    public void send(Message message) {
         try {
             os.write(message.getBytes());
             System.out.println("Message Sent : " + message);
@@ -46,7 +40,7 @@ public class Connexion {
      *
      * @return the message received
      */
-    private Message receive() {
+    public Message receive() {
         byte b[] = new byte[Message.BUFFER_MAX_SIZE];
         try {
             if (is.read(b) != -1) {
@@ -55,7 +49,7 @@ public class Connexion {
                 return message;
             }
         } catch (IOException e) {
-            System.out.printf("Could not read from input stream");
+            System.out.println("Could not read from input stream");
             e.printStackTrace();
         }
         return new Message(Command.EXCEPTION);

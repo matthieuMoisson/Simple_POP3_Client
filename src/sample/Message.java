@@ -32,7 +32,7 @@ public class Message {
         this.build(fullMesage);
     }
 
-    Message(Command command, String arg) {
+    public Message(Command command, String arg) {
         this(command);
         this.argComplet = arg;
     }
