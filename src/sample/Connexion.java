@@ -1,5 +1,7 @@
 package sample;
 
+import transaction.Command;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,7 +16,16 @@ public class Connexion {
     private final InputStream is;
     private final OutputStream os;
 
-    public Connexion() throws IOException {
+    private static Connexion connexion;
+
+    public static Connexion getInstance() throws IOException {
+        if (connexion == null) {
+            connexion = new Connexion();
+        }
+        return connexion;
+    }
+
+    private Connexion() throws IOException {
         Socket clientSocket = new Socket(Settings.getIpServer(), Settings.getPort());
         is = clientSocket.getInputStream();
         os = clientSocket.getOutputStream();
@@ -53,6 +64,16 @@ public class Connexion {
             e.printStackTrace();
         }
         return new Message(Command.EXCEPTION);
+    }
+
+    public void close() {
+        try {
+            this.is.close();
+            this.os.close();
+            connexion = null;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

@@ -1,6 +1,5 @@
 package transaction;
 
-import sample.Command;
 import sample.Connexion;
 import sample.Message;
 

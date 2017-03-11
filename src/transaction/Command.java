@@ -1,4 +1,4 @@
-package sample;
+package transaction;
 
 import java.util.HashSet;
 
@@ -13,8 +13,8 @@ public enum Command {
     DELE("DELE"),
     RETR("RETR"),
     RSET("RSET"),
-    STAT("STAT"),
     LIST("LIST"),
+    STAT("STAT"),
     QUIT("QUIT"),
     DEFAULT(""),
     EXCEPTION("EXCEPTION"),

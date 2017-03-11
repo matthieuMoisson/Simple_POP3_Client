@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="anchorPane" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MailboxController">
+   <children>
+      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600">
+         <children>
+            <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="597.0">
+              <menus>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#disconnect" text="Disconnect" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="186.0" layoutY="27.0" prefHeight="76.0" prefWidth="247.0" text="Mailbox">
+               <font>
+                  <Font name="System Bold" size="19.0" />
+               </font>
+            </Label>
+            <ListView fx:id="listView" layoutX="90.0" layoutY="106.0" prefHeight="166.0" prefWidth="430.0" />
+            <Label fx:id="label" layoutX="120.0" layoutY="287.0" prefHeight="59.0" prefWidth="378.0" text="test" textFill="RED" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

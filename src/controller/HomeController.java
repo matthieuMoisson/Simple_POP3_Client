@@ -2,16 +2,24 @@ package controller;
 
 
 import javafx.application.Platform;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
-import sample.Command;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
+import logger.LogMessage;
+import logger.LogType;
+import logger.Logger;
+import transaction.Command;
 import sample.Connexion;
 import sample.Message;
 import sample.Settings;
 import transaction.Authentication;
-import transaction.Transaction;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -21,28 +29,43 @@ import java.util.Optional;
 
 public class HomeController implements Observer{
 
+    @FXML
     public PasswordField password;
+    @FXML
     public TextField username;
+    @FXML
     public Label logs;
+    @FXML
+    public AnchorPane anchorPane;
 
     private Connexion connexion = null;
 
     public HomeController() {
+        super();
+    }
+
+    @FXML
+    public void initialize() {
+        Logger.setLabel(logs);
         openConnection();
     }
 
-    private String openConnection() {
+    private void openConnection() {
+        if (this.connexion != null) {
+            this.connexion.close();
+        }
         try {
-            this.connexion = new Connexion();
-            System.out.println(this.connexion.receive());
+            this.connexion = Connexion.getInstance();
+            Message m = this.connexion.receive();
+            System.out.println(m.toString());
+            Logger.log(new LogMessage(LogType.SUCCESS, m.toString()));
         } catch (IOException e) {
 //            e.printStackTrace();
-            return (e.getMessage());
+            Logger.log(new LogMessage(e.getMessage()));
         }
-        return "Connection established";
     }
 
-
+    @FXML
     public void openSettings() {
         TextInputDialog dialog = new TextInputDialog(Settings.getHost());
         dialog.setTitle("Settings");
@@ -51,15 +74,13 @@ public class HomeController implements Observer{
 
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(Settings::setSettings);
-        log(openConnection());
+        openConnection();
     }
 
+    @FXML
     public void connect() {
-
-        this.logs.setText("");
-
         if (this.connexion == null) {
-            log(this.openConnection());
+            this.openConnection();
         }
 
         if (this.connexion != null) {
@@ -68,28 +89,40 @@ public class HomeController implements Observer{
                 authentication.addObserver(this);
                 Platform.runLater(authentication);
             } else {
-                log("Provide your credentials");
+                Logger.log("Provide your credentials");
             }
         } else {
-            log("Cannot connect to server");
+            Logger.log("Cannot connect to server");
         }
     }
 
-    private void log(String log) {
-        this.logs.setText("");
-        this.logs.setText(logs.getText() + "\n" + log);
-    }
+    private void openMailBox() {
 
+        try {
+            Parent newWindow = FXMLLoader.load(getClass().getResource("../view/mailbox.fxml"));
+            Stage stage = new Stage();
+            stage.setTitle("Mailbox");
+            stage.setScene(new Scene(newWindow, 600, 400));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Logger.log("Could not open Mailbox");
+        }
+
+        // Hide this current window (if this is what you want)
+        anchorPane.getScene().getWindow().hide();
+    }
 
     @Override
     public void update(Observable o, Object arg) {
-        if (o instanceof Transaction) {
+        if (o instanceof Authentication) {
             Authentication transaction = (Authentication) o;
             Message message = transaction.getMessage();
             if (message.getCommand() == Command.OK) {
-                log("Open new screen");
+                Logger.log(new LogMessage(LogType.SUCCESS,"Connection accepted"));
+                openMailBox();
             } else {
-                log(transaction.getMessage().toString());
+                Logger.log(transaction.getMessage().toString());
             }
         }
     }

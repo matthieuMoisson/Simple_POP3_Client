@@ -10,12 +10,11 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("home.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("../view/home.fxml"));
         primaryStage.setTitle("Client POP3");
         primaryStage.setScene(new Scene(root, 600, 400));
         primaryStage.show();
     }
-
 
     public static void main(String[] args) {
         launch(args);
