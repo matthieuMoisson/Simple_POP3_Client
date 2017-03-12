@@ -57,7 +57,6 @@ public class HomeController implements Observer{
         try {
             this.connexion = Connexion.getInstance();
             Message m = this.connexion.receive();
-            System.out.println(m.toString());
             Logger.log(new LogMessage(LogType.SUCCESS, m.toString()));
         } catch (IOException e) {
 //            e.printStackTrace();

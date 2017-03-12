@@ -44,15 +44,19 @@ public class Message {
     }
 
     private void build(String fullMessage) {
+        if(fullMessage.charAt(0) == '+'  || fullMessage.charAt(0) == '-')
+        {
+            fullMessage = fullMessage.substring(1);
+        }
         String[] words = fullMessage.split(" ");
-        command = this.findCommand(words[0].trim());
+        command = this.findCommand(words[0]);
         argComplet = fullMessage.replaceFirst(command.getText(), "").trim();
     }
 
     private Command findCommand(String word) {
-        for (String command : Command.getEnums()) {
-            if (stringEquals(word, command)) {
-                return Command.valueOf(command);
+        for (Command command : Command.values()) {
+            if (stringEquals(word, command.getText())) {
+                return command;
             }
         }
         return Command.DEFAULT;
@@ -74,7 +78,7 @@ public class Message {
      * @param s2 second string
      * @return true if equals, false else
      */
-    private boolean stringEquals(String s1, String s2) {
+    public boolean stringEquals(String s1, String s2) {
 
         if  (s1.length() != s2.length()) return false;
         for (int i = 0; i < s1.length(); i ++) {
@@ -88,4 +92,6 @@ public class Message {
     public List<String> getArgs() {
         return Arrays.asList(argComplet.split(" "));
     }
+
+
 }

@@ -18,7 +18,7 @@ public enum Command {
     QUIT("QUIT"),
     DEFAULT(""),
     EXCEPTION("EXCEPTION"),
-    ERROR("ERROR");
+    ERROR("ERR");
 
     private final String text;
 
@@ -34,7 +34,8 @@ public enum Command {
 
         HashSet<String> values = new HashSet<>();
         for (Command c : Command.values()) {
-            values.add(c.name());
+            System.out.println("c.name" + c.getText());
+            values.add(c.getText());
         }
         return values;
     }
