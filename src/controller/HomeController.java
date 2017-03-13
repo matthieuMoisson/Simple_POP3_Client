@@ -22,10 +22,7 @@ import sample.Settings;
 import transaction.Authentication;
 
 import java.io.IOException;
-import java.util.Objects;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Optional;
+import java.util.*;
 
 public class HomeController implements Observer{
 
@@ -39,6 +36,7 @@ public class HomeController implements Observer{
     public AnchorPane anchorPane;
 
     private Connexion connexion = null;
+    private String timestamp = null;
 
     public HomeController() {
         super();
@@ -57,6 +55,7 @@ public class HomeController implements Observer{
         try {
             this.connexion = Connexion.getInstance();
             Message m = this.connexion.receive();
+            timestamp = this.connexion.getTimetamp(m);
             Logger.log(new LogMessage(LogType.SUCCESS, m.toString()));
         } catch (IOException e) {
 //            e.printStackTrace();
@@ -84,7 +83,7 @@ public class HomeController implements Observer{
 
         if (this.connexion != null) {
             if (!Objects.equals(username.getText(), "") && !Objects.equals(password.getText(), "")) {
-                Authentication authentication = new Authentication(connexion, username.getText(), password.getText());
+                Authentication authentication = new Authentication(connexion, username.getText(), password.getText(), timestamp);
                 authentication.addObserver(this);
                 Platform.runLater(authentication);
             } else {

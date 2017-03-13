@@ -11,11 +11,14 @@ public class Authentication extends Transaction{
 
     private String username;
     private String password;
+    private String timestamp;
+    private final String SHARE_SECRET = "montagne";
 
-    public Authentication(Connexion connexion, String username, String password) {
+    public Authentication(Connexion connexion, String username, String password, String timestamp) {
         super(connexion);
         this.username = username;
         this.password = password;
+        this.timestamp = timestamp;
     }
 
     @Override

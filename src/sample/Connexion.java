@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.List;
 
 /**
  * Created by Gaetan on 06/03/2017.
@@ -29,6 +30,16 @@ public class Connexion {
         Socket clientSocket = new Socket(Settings.getIpServer(), Settings.getPort());
         is = clientSocket.getInputStream();
         os = clientSocket.getOutputStream();
+    }
+
+    public String getTimetamp(Message m)
+    {
+        List<String> args = m.getArgs();
+        for (String s: args ) {
+            if(s.charAt(0) == '<')
+                return s;
+        }
+        return null;
     }
 
     /**
