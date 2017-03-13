@@ -2,10 +2,13 @@ package sample;
 
 import transaction.Command;
 
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.Socket;
 import java.util.List;
 
 /**
@@ -27,7 +30,10 @@ public class Connexion {
     }
 
     private Connexion() throws IOException {
-        Socket clientSocket = new Socket(Settings.getIpServer(), Settings.getPort());
+        SSLServerSocketFactory serverFactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
+        SocketFactory factory= SSLSocketFactory.getDefault() ;
+        SSLSocket clientSocket = (SSLSocket) factory.createSocket(Settings.getIpServer(), Settings.getPort());
+        clientSocket.setEnabledCipherSuites(serverFactory.getSupportedCipherSuites());
         is = clientSocket.getInputStream();
         os = clientSocket.getOutputStream();
     }
