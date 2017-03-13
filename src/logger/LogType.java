@@ -21,6 +21,7 @@ public enum LogType {
             case WARNING:
                 return Color.ORANGE;
             case INFO:
+                return Color.BLUE;
             default:
                 return Color.ALICEBLUE;
         }

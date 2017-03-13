@@ -9,15 +9,16 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="anchorPane" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MailboxController">
+<AnchorPane fx:id="anchorPane" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.72" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MailboxController">
    <children>
       <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600">
          <children>
             <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="597.0">
               <menus>
-                <Menu mnemonicParsing="false" text="Help">
+                <Menu mnemonicParsing="false" text="Actions">
                   <items>
-                    <MenuItem mnemonicParsing="false" onAction="#disconnect" text="Disconnect" />
+                    <MenuItem mnemonicParsing="false" onAction="#handleDisconnect" text="Disconnect" />
+                    <MenuItem mnemonicParsing="false" onAction="#handleReset" text="Reset" />
                   </items>
                 </Menu>
               </menus>
@@ -27,7 +28,7 @@
                   <Font name="System Bold" size="19.0" />
                </font>
             </Label>
-            <ListView fx:id="listView" layoutX="90.0" layoutY="106.0" prefHeight="166.0" prefWidth="430.0" />
+            <ListView fx:id="listView" layoutX="90.0" layoutY="106.0" onMouseClicked="#handleMouseClickListView" prefHeight="166.0" prefWidth="430.0" />
             <Label fx:id="label" layoutX="120.0" layoutY="287.0" prefHeight="59.0" prefWidth="378.0" text="test" textFill="RED" />
          </children>
       </Pane>
