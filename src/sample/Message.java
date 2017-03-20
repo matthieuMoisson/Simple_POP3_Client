@@ -64,6 +64,9 @@ public class Message {
 
     @Override
     public String toString() {
+        if (command.getText() == "") {
+            return argComplet;
+        }
         return command.getText() + " " + argComplet;
     }
 

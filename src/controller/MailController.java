@@ -1,14 +1,17 @@
 package controller;
 
+import com.sun.org.apache.regexp.internal.RE;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.AnchorPane;
 import logger.LogMessage;
 import logger.LogType;
 import logger.Logger;
+import mail.Mail;
 import sample.Connexion;
 import sample.Settings;
 import transaction.Command;
@@ -29,6 +32,21 @@ public class MailController implements Observer {
     public AnchorPane anchorPane;
 
     private Connexion connexion;
+
+    @FXML
+    private Label fromLabel;
+
+    @FXML
+    private Label subjectLabel;
+
+    @FXML
+    private Label dateLabel;
+
+    @FXML
+    private Label contentLabel;
+
+    @FXML
+    private Label toLabel;
 
     private int idMail = 0;
 
@@ -75,6 +93,15 @@ public class MailController implements Observer {
             alert.showAndWait();
             System.out.println(deleteAction.getMessage());
             anchorPane.getScene().getWindow().hide();
+        }
+        if (o instanceof RetrAction) {
+            RetrAction retrAction = (RetrAction) o;
+            Mail mail = retrAction.getMail();
+            this.subjectLabel.setText(mail.getSubject());
+            this.toLabel.setText(mail.getReceiver());
+            this.fromLabel.setText(mail.getSender());
+            this.dateLabel.setText(mail.getDate());
+            this.contentLabel.setText(mail.getContent());
         }
     }
 

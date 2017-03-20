@@ -1,5 +1,6 @@
 package transaction;
 
+import mail.Mail;
 import sample.Connexion;
 import sample.Message;
 
@@ -18,7 +19,7 @@ public class RetrAction extends Transaction {
         this.idMail = idMail;
     }
 
-    // private Mail mail;
+    private Mail mail;
 
     @Override
     public void run() {
@@ -26,10 +27,16 @@ public class RetrAction extends Transaction {
         this.message = this.connexion.receive();
         if (message.getCommand() == Command.OK) {
             Message content = this.message = this.connexion.receive();
+            mail = new Mail(content.toString());
+            this.connexion.receive();
             System.out.println("----");
             System.out.println(content);
                 setChanged();
                 notifyObservers(this);
         }
+    }
+
+    public Mail getMail() {
+        return mail;
     }
 }
