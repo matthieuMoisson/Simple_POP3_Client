@@ -48,12 +48,6 @@ public class Mail {
         String[] lines = fullMessage.split("\r\n\r\n");
         String header = lines[0];
         String content = lines[1];
-        System.out.println("----*//--*-");
-        System.out.println(header);
-        System.out.println("----*//--*-----");
-
-        System.out.println(content);
-        System.out.println("----*//--*-");
 
         String[] headerFields = header.split("\r\n");
         for (String fieldLine : headerFields) {

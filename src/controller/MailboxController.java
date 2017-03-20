@@ -125,4 +125,10 @@ public class MailboxController implements Observer{
         resetAction.addObserver(this);
         Platform.runLater(resetAction);
     }
+
+    public void handleRefresh(ActionEvent actionEvent) {
+        StatAction statAction = new StatAction(connexion);
+        statAction.addObserver(this);
+        Platform.runLater(statAction);
+    }
 }
