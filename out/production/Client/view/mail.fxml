@@ -16,14 +16,14 @@
                   <Font name="System Bold" size="19.0" />
                </font>
             </Label>
-            <Label fx:id="fromLabel" layoutX="110.0" layoutY="161.0" text="Label" />
-            <Label fx:id="subjectLabel" layoutX="110.0" layoutY="124.0" text="Label" />
-            <Label fx:id="dateLabel" layoutX="475.0" layoutY="161.0" text="Label" />
-            <Label fx:id="contentLabel" layoutX="110.0" layoutY="229.0" prefHeight="135.0" prefWidth="404.0" text="Label" />
-            <Label fx:id="toLabel" layoutX="110.0" layoutY="202.0" text="Label" />
+            <Label fx:id="fromLabel" layoutX="41.0" layoutY="161.0" text="Label" />
+            <Label fx:id="subjectLabel" layoutX="43.0" layoutY="124.0" text="Label" />
+            <Label fx:id="dateLabel" layoutX="389.0" layoutY="161.0" text="Label" />
+            <Label fx:id="contentLabel" layoutX="71.0" layoutY="229.0" prefHeight="135.0" prefWidth="404.0" text="Label" />
+            <Label fx:id="toLabel" layoutX="43.0" layoutY="202.0" text="Label" />
             <ToolBar prefHeight="40.0" prefWidth="600.0">
               <items>
-                <Button fx:id="deleteBtn" mnemonicParsing="false" text="Delete" onAction="#handleDelete" />
+                <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#handleDelete" text="Delete" />
               </items>
             </ToolBar>
          </children>
