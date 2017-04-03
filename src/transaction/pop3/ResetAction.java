@@ -1,7 +1,9 @@
-package transaction;
+package transaction.pop3;
 
-import sample.Connexion;
-import sample.Message;
+import connexion.Connexion;
+import connexion.Message;
+import transaction.Command;
+import transaction.Transaction;
 
 /**
  * Created by Gaetan on 11/03/2017.

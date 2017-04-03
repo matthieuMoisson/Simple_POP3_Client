@@ -1,23 +1,21 @@
 package controller;
 
-import com.sun.org.apache.regexp.internal.RE;
+import connexion.Pop3Connexion;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.AnchorPane;
-import logger.LogMessage;
-import logger.LogType;
+import javafx.stage.Stage;
 import logger.Logger;
 import mail.Mail;
-import sample.Connexion;
-import sample.Settings;
-import transaction.Command;
-import transaction.DeleteAction;
-import transaction.RetrAction;
-import transaction.StatAction;
+import connexion.Connexion;
+import transaction.pop3.DeleteAction;
+import transaction.pop3.RetrAction;
 
 import java.io.IOException;
 import java.util.Observable;
@@ -53,7 +51,7 @@ public class MailController implements Observer {
     @FXML
     public void initialize() {
         try {
-            this.connexion = Connexion.getInstance();
+            this.connexion = Pop3Connexion.getInstance();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -107,5 +105,29 @@ public class MailController implements Observer {
 
     public void handleDelete(ActionEvent actionEvent) {
         runDelete(this.idMail);
+    }
+
+    public void handleReply(ActionEvent actionEvent) {
+        openNewMail();
+    }
+
+    private void openNewMail() {
+        try {
+
+            FXMLLoader fxmlLoader= new FXMLLoader(getClass().getResource("../view/newmail.fxml"));
+            Parent newWindow = fxmlLoader.load();
+
+            NewMailController newMailController = fxmlLoader.getController();
+            newMailController.setRecipients(this.fromLabel.getText());
+
+            Stage stage = new Stage();
+            stage.setTitle("New Mail");
+            stage.setScene(new Scene(newWindow, 600, 400));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Logger.log("Could not open New Mail");
+        }
     }
 }

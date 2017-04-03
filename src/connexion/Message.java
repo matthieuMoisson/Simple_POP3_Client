@@ -1,4 +1,4 @@
-package sample;
+package connexion;
 
 import transaction.Command;
 

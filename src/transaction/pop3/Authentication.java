@@ -1,7 +1,9 @@
-package transaction;
+package transaction.pop3;
 
-import sample.Connexion;
-import sample.Message;
+import connexion.Connexion;
+import connexion.Message;
+import transaction.Command;
+import transaction.Transaction;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -10,9 +12,14 @@ import java.security.NoSuchAlgorithmException;
  * Created by Gaetan on 07/03/2017.
  * Authentication
  */
-public class Authentication extends Transaction{
+public class Authentication extends Transaction {
 
     private String username;
+
+    public String getUsername() {
+        return username;
+    }
+
     private String password;
     private String timestamp;
     private String encodedPassword;

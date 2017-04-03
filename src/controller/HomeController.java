@@ -1,6 +1,7 @@
 package controller;
 
 
+import connexion.Pop3Connexion;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,10 +17,10 @@ import logger.LogMessage;
 import logger.LogType;
 import logger.Logger;
 import transaction.Command;
-import sample.Connexion;
-import sample.Message;
+import connexion.Connexion;
+import connexion.Message;
 import sample.Settings;
-import transaction.Authentication;
+import transaction.pop3.Authentication;
 
 import java.io.IOException;
 import java.util.*;
@@ -53,7 +54,7 @@ public class HomeController implements Observer{
             this.connexion.close();
         }
         try {
-            this.connexion = Connexion.getInstance();
+            this.connexion = Pop3Connexion.getInstance();
             Message m = this.connexion.receive();
             timestamp = this.connexion.getTimetamp(m);
             Logger.log(new LogMessage(LogType.SUCCESS, m.toString()));
@@ -117,6 +118,7 @@ public class HomeController implements Observer{
             Authentication transaction = (Authentication) o;
             Message message = transaction.getMessage();
             if (message.getCommand() == Command.OK) {
+                connexion.setCurrentUsername(transaction.getUsername());
                 Logger.log(new LogMessage(LogType.SUCCESS,"Connection accepted"));
                 openMailBox();
             } else {

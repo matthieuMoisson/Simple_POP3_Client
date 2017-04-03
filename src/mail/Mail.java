@@ -44,6 +44,21 @@ public class Mail {
         this.buildInfo(fullMessage);
     }
 
+    /**
+     * New Mail
+     * @param sender sender
+     * @param receiver receiver
+     * @param subject subject
+     * @param content content
+     */
+    public Mail(String sender, String receiver, String subject, String content) {
+        this.sender = sender;
+        this.receiver = receiver;
+        this.subject = subject;
+        this.content = content;
+        this.date = "";
+    }
+
     private void buildInfo(String fullMessage) {
         String[] lines = fullMessage.split("\r\n\r\n");
         String header = lines[0];

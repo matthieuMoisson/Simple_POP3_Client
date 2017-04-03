@@ -1,5 +1,6 @@
-package sample;
+package connexion;
 
+import sample.Settings;
 import transaction.Command;
 
 import javax.net.SocketFactory;
@@ -15,21 +16,24 @@ import java.util.List;
  * Created by Gaetan on 06/03/2017.
  * Connexion
  */
-public class Connexion {
+public abstract class Connexion {
 
     private final InputStream is;
     private final OutputStream os;
 
-    private static Connexion connexion;
+    protected String currentUsername = "";
 
-    public static Connexion getInstance() throws IOException {
-        if (connexion == null) {
-            connexion = new Connexion();
-        }
-        return connexion;
+    public String getCurrentUsername() {
+        return currentUsername;
     }
 
-    private Connexion() throws IOException {
+    public void setCurrentUsername(String currentUsername) {
+        this.currentUsername = currentUsername;
+    }
+
+    protected static Connexion connexion;
+
+    protected Connexion() throws IOException {
         SSLServerSocketFactory serverFactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
         SocketFactory factory= SSLSocketFactory.getDefault() ;
         SSLSocket clientSocket = (SSLSocket) factory.createSocket(Settings.getIpServer(), Settings.getPort());

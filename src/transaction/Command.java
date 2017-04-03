@@ -18,7 +18,8 @@ public enum Command {
     QUIT("QUIT"),
     DEFAULT(""),
     EXCEPTION("EXCEPTION"),
-    ERROR("ERR");
+    ERROR("ERR"),
+    ELHO("ELHO");
 
     private final String text;
 
