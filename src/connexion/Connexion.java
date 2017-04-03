@@ -36,7 +36,7 @@ public abstract class Connexion {
     protected Connexion() throws IOException {
         SSLServerSocketFactory serverFactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
         SocketFactory factory= SSLSocketFactory.getDefault() ;
-        SSLSocket clientSocket = (SSLSocket) factory.createSocket(Settings.getIpServer(), Settings.getPort());
+        SSLSocket clientSocket = (SSLSocket) factory.createSocket(Settings.getIpServerPop3(), Settings.getPortPop3());
         clientSocket.setEnabledCipherSuites(serverFactory.getSupportedCipherSuites());
         is = clientSocket.getInputStream();
         os = clientSocket.getOutputStream();

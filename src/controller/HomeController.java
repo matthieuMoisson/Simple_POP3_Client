@@ -71,8 +71,12 @@ public class HomeController implements Observer{
         dialog.setHeaderText("Server Settings");
         dialog.setContentText("Server: ");
 
-        Optional<String> result = dialog.showAndWait();
-        result.ifPresent(Settings::setSettings);
+        Optional<String> fullHostPop3 = dialog.showAndWait();
+        fullHostPop3.ifPresent(Settings::setSettingsPop3);
+
+        Optional<String> fullHostSmtp = dialog.showAndWait();
+        fullHostSmtp.ifPresent(Settings::setSettingsSmtp);
+
         openConnection();
     }
 

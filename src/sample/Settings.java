@@ -9,13 +9,17 @@ import java.net.UnknownHostException;
  */
 public class Settings {
 
-    private static int port = 1096;
+    private static int portPop3 = 1096;
 
-    private static InetAddress ipServer;
+    private static int portSMTP = 1097;
+
+    private static InetAddress ipServerPop3;
+
+    private static InetAddress ipServerSMTP;
 
     static {
         try {
-            ipServer = InetAddress.getLocalHost();
+            ipServerPop3 = InetAddress.getLocalHost();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
@@ -24,37 +28,67 @@ public class Settings {
     private static String host = getHost();
 
 
-    public static InetAddress getIpServer() {
-        return ipServer;
+    public static InetAddress getIpServerPop3() {
+        return ipServerPop3;
     }
 
-    public static void setIpServer(InetAddress ipServer) {
-        Settings.ipServer = ipServer;
+    public static void setIpServerPop3(InetAddress ipServerPop3) {
+        Settings.ipServerPop3 = ipServerPop3;
     }
 
-    public static int getPort() {
-        return port;
+    public static int getPortPop3() {
+        return portPop3;
     }
 
-    public static void setPort(int port) {
-        Settings.port = port;
+    public static void setPortPop3(int portPop3) {
+        Settings.portPop3 = portPop3;
     }
 
-    public static void setSettings(String host)  {
+    public static void setSettingsPop3(String host)  {
         String[] hostSplit = host.split(":");
         if (hostSplit.length == 2) {
             String hostname = hostSplit[0];
             int port = Integer.parseInt(hostSplit[1]);
             try {
-                setIpServer(InetAddress.getByName(hostname));
+                setIpServerPop3(InetAddress.getByName(hostname));
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
-            setPort(port);
+            setPortPop3(port);
+        }
+    }
+
+    public static void setSettingsSmtp(String host)  {
+        String[] hostSplit = host.split(":");
+        if (hostSplit.length == 2) {
+            String hostname = hostSplit[0];
+            int port = Integer.parseInt(hostSplit[1]);
+            try {
+                setIpServerSMTP(InetAddress.getByName(hostname));
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+            setPortSMTP(port);
         }
     }
 
     public static String getHost() {
-        return getIpServer().getHostName() + ":" + getPort();
+        return getIpServerPop3().getHostName() + ":" + getPortPop3();
+    }
+
+    public static int getPortSMTP() {
+        return portSMTP;
+    }
+
+    public static void setPortSMTP(int portSMTP) {
+        Settings.portSMTP = portSMTP;
+    }
+
+    public static InetAddress getIpServerSMTP() {
+        return ipServerSMTP;
+    }
+
+    public static void setIpServerSMTP(InetAddress ipServerSMTP) {
+        Settings.ipServerSMTP = ipServerSMTP;
     }
 }
