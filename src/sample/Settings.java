@@ -20,13 +20,11 @@ public class Settings {
     static {
         try {
             ipServerPop3 = InetAddress.getLocalHost();
+            ipServerSMTP = InetAddress.getLocalHost();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
     }
-
-    private static String host = getHost();
-
 
     public static InetAddress getIpServerPop3() {
         return ipServerPop3;
@@ -72,7 +70,11 @@ public class Settings {
         }
     }
 
-    public static String getHost() {
+    public static String getHostSMTP() {
+        return getIpServerSMTP().getHostName() + ":" + getPortSMTP();
+    }
+
+    public static String getHostPOP3() {
         return getIpServerPop3().getHostName() + ":" + getPortPop3();
     }
 

@@ -18,10 +18,10 @@ import java.util.List;
  */
 public abstract class Connexion {
 
-    private final InputStream is;
-    private final OutputStream os;
+    InputStream is;
+    OutputStream os;
 
-    protected String currentUsername = "";
+    private String currentUsername = "";
 
     public String getCurrentUsername() {
         return currentUsername;
@@ -33,11 +33,9 @@ public abstract class Connexion {
 
     protected static Connexion connexion;
 
-    protected Connexion() throws IOException {
-        SSLServerSocketFactory serverFactory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
-        SocketFactory factory= SSLSocketFactory.getDefault() ;
-        SSLSocket clientSocket = (SSLSocket) factory.createSocket(Settings.getIpServerPop3(), Settings.getPortPop3());
-        clientSocket.setEnabledCipherSuites(serverFactory.getSupportedCipherSuites());
+    protected Connexion() {}
+
+    protected Connexion(SSLSocket clientSocket) throws IOException {
         is = clientSocket.getInputStream();
         os = clientSocket.getOutputStream();
     }

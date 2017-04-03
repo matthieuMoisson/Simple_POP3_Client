@@ -39,11 +39,11 @@ public class NewMailController implements Observer {
 
     @FXML
     public void initialize() {
-        try {
-            this.connexion = SmtpConnexion.getInstance();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            this.connexion = SmtpConnexion.getInstance();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public NewMailController() {
@@ -64,10 +64,15 @@ public class NewMailController implements Observer {
             return;
         }
 
-        Mail mail = new Mail(connexion.getCurrentUsername(), recipients.getText(), subject.getText(), content.getText());
-        SendAction sendAction = new SendAction(connexion, mail);
-        sendAction.addObserver(this);
-        Platform.runLater(sendAction);
+        Mail mail = null;
+        try {
+            mail = new Mail(Pop3Connexion.getInstance().getCurrentUsername(), recipients.getText(), subject.getText(), content.getText());
+            SendAction sendAction = new SendAction(mail);
+            sendAction.addObserver(this);
+            Platform.runLater(sendAction);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

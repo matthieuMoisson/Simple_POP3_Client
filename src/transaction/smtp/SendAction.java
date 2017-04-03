@@ -2,10 +2,12 @@ package transaction.smtp;
 
 import connexion.Connexion;
 import connexion.Message;
+import connexion.SmtpConnexion;
 import mail.Mail;
 import transaction.Command;
 import transaction.Transaction;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +21,8 @@ public class SendAction extends Transaction {
 
     private List<String> recipients = new ArrayList<>();
 
-    public SendAction(Connexion connexion, Mail mail) {
-        super(connexion);
+    public SendAction(Mail mail) throws IOException {
+        super(SmtpConnexion.getInstance());
         this.mail = mail;
         this.buildRecipients(mail.getReceiver());
     }
@@ -43,9 +45,8 @@ public class SendAction extends Transaction {
         // System.out.println(this.recipients);
 
         this.connexion.send(new Message(Command.ELHO, String.valueOf(5)));
-
-
         this.message = this.connexion.receive();
+
         if (message.getCommand() == Command.OK) {
             setChanged();
             notifyObservers(this);

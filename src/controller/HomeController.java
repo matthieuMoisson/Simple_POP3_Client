@@ -3,6 +3,7 @@ package controller;
 
 import connexion.Pop3Connexion;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -65,22 +66,6 @@ public class HomeController implements Observer{
     }
 
     @FXML
-    public void openSettings() {
-        TextInputDialog dialog = new TextInputDialog(Settings.getHost());
-        dialog.setTitle("Settings");
-        dialog.setHeaderText("Server Settings");
-        dialog.setContentText("Server: ");
-
-        Optional<String> fullHostPop3 = dialog.showAndWait();
-        fullHostPop3.ifPresent(Settings::setSettingsPop3);
-
-        Optional<String> fullHostSmtp = dialog.showAndWait();
-        fullHostSmtp.ifPresent(Settings::setSettingsSmtp);
-
-        openConnection();
-    }
-
-    @FXML
     public void connect() {
         if (this.connexion == null) {
             this.openConnection();
@@ -129,5 +114,31 @@ public class HomeController implements Observer{
                 Logger.log(transaction.getMessage().toString());
             }
         }
+    }
+
+    @FXML
+    public void openSettingsPOP3(ActionEvent actionEvent) {
+        TextInputDialog dialog = createDialog(Settings.getHostPOP3(), "Settings POP3", "POP3 Server Settings", "Server: ");
+
+        Optional<String> fullHostPop3 = dialog.showAndWait();
+        fullHostPop3.ifPresent(Settings::setSettingsPop3);
+        openConnection();
+    }
+
+    @FXML
+    public void openSettingsSMTP(ActionEvent actionEvent) {
+        TextInputDialog dialog = createDialog(Settings.getHostSMTP(), "Settings SMTP", "SMTP Server Settings", "Server: ");
+
+        Optional<String> fullHostSMTP = dialog.showAndWait();
+        fullHostSMTP.ifPresent(Settings::setSettingsSmtp);
+
+    }
+
+    private TextInputDialog createDialog(String defaultHost, String title, String header, String content) {
+        TextInputDialog dialog = new TextInputDialog(defaultHost);
+        dialog.setTitle(title);
+        dialog.setHeaderText(header);
+        dialog.setContentText(content);
+        return dialog;
     }
 }
