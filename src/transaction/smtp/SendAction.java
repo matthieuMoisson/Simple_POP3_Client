@@ -2,6 +2,7 @@ package transaction.smtp;
 
 import connexion.Message;
 import connexion.SmtpConnexion;
+import javafx.scene.control.Alert;
 import mail.Mail;
 import transaction.Command;
 import transaction.Transaction;
@@ -23,6 +24,7 @@ public class SendAction extends Transaction {
     private List<String> recipients = new ArrayList<>();
 
     private List<String> recipientsValid = new ArrayList<>();
+    private List<String> recipientsInvalid = new ArrayList<>();
 
     public SendAction(Mail mail) throws IOException {
         super(SmtpConnexion.getInstance());
@@ -66,6 +68,8 @@ public class SendAction extends Transaction {
             this.message = this.connexion.receive();
             if(message.getCommand() != Command.ERRORSMTP) {
                 recipientsValid.add(recipient);
+            }else{
+                recipientsInvalid.add(recipient);
             }
         }
 
@@ -92,10 +96,29 @@ public class SendAction extends Transaction {
         } else{
             this.sendReset();
         }
+
         if (message.getCommand() == Command.OKSMTP) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("Message Sent! ");
+            alert.setContentText("Your mail was sent successfully! \nBut no adresse found for : "
+                    + this.listMailToString(this.recipientsInvalid));
+            alert.show();
             setChanged();
             notifyObservers(this);
         }
+    }
+
+    public String listMailToString(List<String> l){
+        StringBuilder response = new StringBuilder("");
+        for (int i = 0; i < l.size(); i++) {
+            response.append(l.get(i));
+            if(i != l.size()-1){
+                response.append(", ");
+            }else{
+                response.append("\r\n");
+            }
+        }
+        return response.toString();
     }
 
     private String buildMail(){
@@ -104,14 +127,7 @@ public class SendAction extends Transaction {
         mail.append("Subject: ").append(this.mail.getSubject()).append("\r\n");
         mail.append("From: ").append(this.mail.getSender()).append("\r\n");
         mail.append("To: ");
-        for (int i = 0; i < this.recipientsValid.size(); i++) {
-            mail.append(this.recipientsValid.get(i));
-            if(i != this.recipientsValid.size()-1){
-                mail.append(", ");
-            }else{
-                mail.append("\r\n");
-            }
-        }
+        mail.append(this.listMailToString(this.recipientsValid));
         mail.append("\r\n");
         mail.append(this.mail.getContent());
         return mail.toString();
