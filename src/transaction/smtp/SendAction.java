@@ -7,7 +7,9 @@ import transaction.Command;
 import transaction.Transaction;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,9 +35,9 @@ public class SendAction extends Transaction {
         String[] receivers = fullReceiver.split(";");
         for (String receiver : receivers) {
             if (receiver.contains("<") && receiver.contains(">")) {
-                this.recipients.add("<" + receiver.split("<")[1].split(">")[0] +"<");
+                this.recipients.add("<" + receiver.split("<")[1].split(">")[0] +">");
             }else {
-                this.recipients.add("<" +receiver.trim() + "<");
+                this.recipients.add("<" +receiver.trim() + ">");
             }
         }
     }
@@ -57,10 +59,6 @@ public class SendAction extends Transaction {
         // ------------- Envoi MAIL FROM
         this.connexion.send(new Message("MAIL FROM " + mail.getSender()));
         this.message = this.connexion.receive();
-        if (message.getCommand() == Command.OKSMTP) {
-            setChanged();
-            notifyObservers(this);
-        }
 
         // ------------- Envoi RCPT TO
         for (String recipient : recipients) {
@@ -78,7 +76,9 @@ public class SendAction extends Transaction {
             this.message = this.connexion.receive();
             if(message.getCommand() == Command.GETMAIL) {
                 // ------------- Envoi Mail content
-                this.connexion.send(new Message(this.mail.getContent()));
+
+                this.connexion.send(new Message(this.buildMail()));
+
                 this.message = this.connexion.receive();
                 if(message.getCommand() == Command.OKSMTP)
                     this.connexion.send(new Message(Command.QUIT));
@@ -92,11 +92,29 @@ public class SendAction extends Transaction {
         } else{
             this.sendReset();
         }
-
         if (message.getCommand() == Command.OKSMTP) {
             setChanged();
             notifyObservers(this);
         }
+    }
+
+    private String buildMail(){
+        StringBuilder mail = new StringBuilder("");
+        mail.append("Date: ").append(new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss").format(new Date())).append("\r\n");
+        mail.append("Subject: ").append(this.mail.getSubject()).append("\r\n");
+        mail.append("From: ").append(this.mail.getSender()).append("\r\n");
+        mail.append("To: ");
+        for (int i = 0; i < this.recipientsValid.size(); i++) {
+            mail.append(this.recipientsValid.get(i));
+            if(i != this.recipientsValid.size()-1){
+                mail.append(", ");
+            }else{
+                mail.append("\r\n");
+            }
+        }
+        mail.append("\r\n");
+        mail.append(this.mail.getContent());
+        return mail.toString();
     }
 
     private void sendReset() {

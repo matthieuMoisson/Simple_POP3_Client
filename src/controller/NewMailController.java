@@ -50,7 +50,7 @@ public class NewMailController implements Observer {
         super();
     }
 
-    public void setRecipients(String recipients) {
+    void setRecipients(String recipients) {
         this.recipients.setText(recipients);
     }
 
@@ -64,7 +64,7 @@ public class NewMailController implements Observer {
             return;
         }
 
-        Mail mail = null;
+        Mail mail;
         try {
             mail = new Mail(Pop3Connexion.getInstance().getCurrentUsername(), recipients.getText(), subject.getText(), content.getText());
             SendAction sendAction = new SendAction(mail);
@@ -79,12 +79,11 @@ public class NewMailController implements Observer {
     public void update(Observable o, Object arg) {
         if (o instanceof SendAction) {
             SendAction sendAction = (SendAction) o;
-            if (sendAction.getMessage().getCommand().equals(Command.OK)) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setHeaderText("Message Sent! ");
-                alert.setContentText("Your mail was sent successfully! ");
-                alert.show();
-            }
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("Message Sent! ");
+            alert.setContentText("Your mail was sent successfully! ");
+            alert.show();
+            anchorPane.getScene().getWindow().hide();
         }
     }
 

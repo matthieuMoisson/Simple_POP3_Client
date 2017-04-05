@@ -1,11 +1,15 @@
 package mail;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by p1509413 on 20/03/2017.
+ * J'ai modifié mon entête
  */
 public class Mail {
 
@@ -56,7 +60,7 @@ public class Mail {
         this.receiver = receiver;
         this.subject = subject;
         this.content = content;
-        this.date = "";
+        this.date = new SimpleDateFormat("E, dd MMM yyyy HH:mm:ss").format(new Date());
     }
 
     private void buildInfo(String fullMessage) {
@@ -78,13 +82,13 @@ public class Mail {
     }
 
     private void setField(String field, String lineSplit) {
-        if (field == "Date: ") {
+        if (Objects.equals(field, "Date: ")) {
             this.date = lineSplit;
-        } else if (field == "Subject: ") {
+        } else if (Objects.equals(field, "Subject: ")) {
             this.subject = lineSplit;
-        } else if (field == "To: ") {
+        } else if (Objects.equals(field, "To: ")) {
             this.receiver = lineSplit;
-        } else if (field == "From: ") {
+        } else if (Objects.equals(field, "From: ")) {
             this.sender = lineSplit;
         }
 
