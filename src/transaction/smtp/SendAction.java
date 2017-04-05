@@ -1,6 +1,5 @@
 package transaction.smtp;
 
-import connexion.Connexion;
 import connexion.Message;
 import connexion.SmtpConnexion;
 import mail.Mail;
@@ -21,6 +20,8 @@ public class SendAction extends Transaction {
 
     private List<String> recipients = new ArrayList<>();
 
+    private List<String> recipientsValid = new ArrayList<>();
+
     public SendAction(Mail mail) throws IOException {
         super(SmtpConnexion.getInstance());
         this.connexion.receive();
@@ -29,15 +30,14 @@ public class SendAction extends Transaction {
     }
 
     private void buildRecipients(String fullReceiver) {
-
-            String[] receivers = fullReceiver.split(";");
-            for (String receiver : receivers) {
-                if (receiver.contains("<") && receiver.contains(">")) {
-                    this.recipients.add(receiver.split("<")[1].split(">")[0]);
-                }else {
-                    this.recipients.add(receiver.trim());
-                }
+        String[] receivers = fullReceiver.split(";");
+        for (String receiver : receivers) {
+            if (receiver.contains("<") && receiver.contains(">")) {
+                this.recipients.add("<" + receiver.split("<")[1].split(">")[0] +"<");
+            }else {
+                this.recipients.add("<" +receiver.trim() + "<");
             }
+        }
     }
 
     @Override
@@ -48,7 +48,8 @@ public class SendAction extends Transaction {
         // ------------ Envoi ELHO
         this.connexion.send(new Message(Command.ELHO, "polytech.ipc"));
         this.message = this.connexion.receive();
-        if (this.message.getCommand() != Command.OK) {
+        System.out.println(this.message.getCommand());
+        if (this.message.getCommand() != Command.OKSMTP) {
             System.out.println("Error after ELHO: " + this.message.getArgComplet());
             return;
         }
@@ -56,7 +57,7 @@ public class SendAction extends Transaction {
         // ------------- Envoi MAIL FROM
         this.connexion.send(new Message("MAIL FROM " + mail.getSender()));
         this.message = this.connexion.receive();
-        if (message.getCommand() == Command.OK) {
+        if (message.getCommand() == Command.OKSMTP) {
             setChanged();
             notifyObservers(this);
         }
@@ -65,17 +66,40 @@ public class SendAction extends Transaction {
         for (String recipient : recipients) {
             this.connexion.send(new Message("RCPT TO " + recipient));
             this.message = this.connexion.receive();
-            if (this.message.getArgComplet() == "550 OK") {
-                this.connexion.send(new Message("RSET"));
+            if(message.getCommand() != Command.ERRORSMTP) {
+                recipientsValid.add(recipient);
             }
         }
 
-        if (message.getCommand() == Command.OK) {
+        if(!recipientsValid.isEmpty())
+        {
+            // ------------- Envoi DATA
+            this.connexion.send(new Message(Command.DATA));
+            this.message = this.connexion.receive();
+            if(message.getCommand() == Command.GETMAIL) {
+                // ------------- Envoi Mail content
+                this.connexion.send(new Message(this.mail.getContent()));
+                this.message = this.connexion.receive();
+                if(message.getCommand() == Command.OKSMTP)
+                    this.connexion.send(new Message(Command.QUIT));
+                else
+                    this.sendReset();
+            }
+            else
+            {
+                this.sendReset();
+            }
+        } else{
+            this.sendReset();
+        }
+
+        if (message.getCommand() == Command.OKSMTP) {
             setChanged();
             notifyObservers(this);
         }
+    }
 
-
-
+    private void sendReset() {
+        this.connexion.send(new Message(Command.RST));
     }
 }

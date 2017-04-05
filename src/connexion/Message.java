@@ -14,6 +14,10 @@ public class Message {
 
     private Command command = Command.DEFAULT;
 
+    public Message(Command data) {
+        this.command = data;
+    }
+
     public Command getCommand() {return command;}
 
     private String argComplet = "";
@@ -37,10 +41,6 @@ public class Message {
     public Message(Command command, String arg) {
         this(command);
         this.argComplet = arg;
-    }
-
-    Message(Command command) {
-        this.command = command;
     }
 
     private void build(String fullMessage) {

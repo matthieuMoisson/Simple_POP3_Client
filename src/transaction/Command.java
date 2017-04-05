@@ -19,7 +19,15 @@ public enum Command {
     DEFAULT(""),
     EXCEPTION("EXCEPTION"),
     ERROR("ERR"),
-    ELHO("ELHO");
+    ELHO("EHLO"),
+    OKSMTP("250"),
+    MAIL("MAIL"),
+    RCPT("RCPT"),
+    RST("RST"),
+    DATA("DATA"),
+    ERRORSMTP("550"),
+    GETMAIL("354"),
+    QUITCODE("221");
 
     private final String text;
 

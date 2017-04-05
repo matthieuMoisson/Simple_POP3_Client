@@ -52,7 +52,7 @@ public class Mail {
      * @param content content
      */
     public Mail(String sender, String receiver, String subject, String content) {
-        this.sender = sender;
+        this.sender = "<" + sender + ">";
         this.receiver = receiver;
         this.subject = subject;
         this.content = content;
