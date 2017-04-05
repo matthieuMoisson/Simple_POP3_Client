@@ -80,12 +80,28 @@ public class MailboxController implements Observer{
             if (quitAction.isConnexionClosed()) {
                 this.connexion.close();
                 anchorPane.getScene().getWindow().hide();
+                openHome();
+
             } else {
                 Logger.log("Could not handleDisconnect");
             }
         } else if (o instanceof ResetAction) {
             ResetAction resetAction = (ResetAction) o;
             Logger.log(resetAction.getMessage().toString());
+        }
+    }
+
+    private void openHome() {
+        try {
+            FXMLLoader fxmlLoader= new FXMLLoader(getClass().getResource("../view/home.fxml"));
+            Parent newWindow = fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Home");
+            stage.setScene(new Scene(newWindow, 600, 400));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Logger.log("Could not open Mail");
         }
     }
 

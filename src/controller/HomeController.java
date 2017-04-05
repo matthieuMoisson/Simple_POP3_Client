@@ -8,10 +8,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import logger.LogMessage;
@@ -37,6 +36,9 @@ public class HomeController implements Observer{
     @FXML
     public AnchorPane anchorPane;
 
+    @FXML
+    public Button btn_connect;
+
     private Connexion connexion = null;
     private String timestamp = null;
 
@@ -46,6 +48,13 @@ public class HomeController implements Observer{
 
     @FXML
     public void initialize() {
+        anchorPane.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
+            if (ev.getCode() == KeyCode.ENTER) {
+                btn_connect.fire();
+                ev.consume();
+            }
+        });
+
         Logger.setLabel(logs);
         openConnection();
     }
