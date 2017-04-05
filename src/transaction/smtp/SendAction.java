@@ -23,6 +23,7 @@ public class SendAction extends Transaction {
 
     public SendAction(Mail mail) throws IOException {
         super(SmtpConnexion.getInstance());
+        this.connexion.receive();
         this.mail = mail;
         this.buildRecipients(mail.getReceiver());
     }
@@ -44,13 +45,37 @@ public class SendAction extends Transaction {
 
         // System.out.println(this.recipients);
 
-        this.connexion.send(new Message(Command.ELHO, String.valueOf(5)));
+        // ------------ Envoi ELHO
+        this.connexion.send(new Message(Command.ELHO, "polytech.ipc"));
         this.message = this.connexion.receive();
+        if (this.message.getCommand() != Command.OK) {
+            System.out.println("Error after ELHO: " + this.message.getArgComplet());
+            return;
+        }
+
+        // ------------- Envoi MAIL FROM
+        this.connexion.send(new Message("MAIL FROM " + mail.getSender()));
+        this.message = this.connexion.receive();
+        if (message.getCommand() == Command.OK) {
+            setChanged();
+            notifyObservers(this);
+        }
+
+        // ------------- Envoi RCPT TO
+        for (String recipient : recipients) {
+            this.connexion.send(new Message("RCPT TO " + recipient));
+            this.message = this.connexion.receive();
+            if (this.message.getArgComplet() == "550 OK") {
+                this.connexion.send(new Message("RSET"));
+            }
+        }
 
         if (message.getCommand() == Command.OK) {
             setChanged();
             notifyObservers(this);
         }
+
+
 
     }
 }
