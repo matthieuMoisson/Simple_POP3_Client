@@ -107,8 +107,8 @@ public class MailboxController implements Observer{
 
     public void handleMouseClickListView(MouseEvent mouseEvent) {
         int idMailClicked = listView.getSelectionModel().getSelectedIndex() + 1;
+        listView.getSelectionModel().clearSelection();
         // Open Mail Screen
-        System.out.println(idMailClicked);
         openMail(idMailClicked);
     }
 
@@ -122,6 +122,9 @@ public class MailboxController implements Observer{
     }
 
     private void openMail(int idMail) {
+
+        if (idMail == 0) return;
+
         try {
 
             FXMLLoader fxmlLoader= new FXMLLoader(getClass().getResource("../view/mail.fxml"));
