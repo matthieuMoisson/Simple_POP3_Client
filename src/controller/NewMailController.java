@@ -79,10 +79,7 @@ public class NewMailController implements Observer {
     public void update(Observable o, Object arg) {
         if (o instanceof SendAction) {
             SendAction sendAction = (SendAction) o;
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setHeaderText("Message Sent! ");
-            alert.setContentText("Your mail was sent successfully! ");
-            alert.show();
+
             anchorPane.getScene().getWindow().hide();
         }
     }
