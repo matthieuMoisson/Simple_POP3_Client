@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static java.lang.System.exit;
+
 /**
  * Created by Gaetan on 11/03/2017.
  * Send a mail
@@ -20,6 +22,8 @@ import java.util.List;
 public class SendAction extends Transaction {
 
     private Mail mail;
+
+    private String messageRetour = "";
 
     private List<String> recipients = new ArrayList<>();
 
@@ -61,6 +65,9 @@ public class SendAction extends Transaction {
         // ------------- Envoi MAIL FROM
         this.connexion.send(new Message("MAIL FROM " + mail.getSender()));
         this.message = this.connexion.receive();
+        if(message.getCommand() == Command.ERRORSMTP){
+            this.sendReset("Expéditeur invalide !" );
+        }
 
         // ------------- Envoi RCPT TO
         for (String recipient : recipients) {
@@ -87,28 +94,41 @@ public class SendAction extends Transaction {
                 if(message.getCommand() == Command.OKSMTP)
                     this.connexion.send(new Message(Command.QUIT));
                 else
-                    this.sendReset();
+                    this.sendReset("");
             }
             else
             {
-                this.sendReset();
+                this.sendReset("Probleme commande data");
             }
         } else{
-            this.sendReset();
+            this.sendReset("Aucun destinataire valide!" );
         }
 
         if (message.getCommand() == Command.OKSMTP) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("Message Sent! ");
-            alert.setContentText("Your mail was sent successfully! \nBut no adresse found for : "
-                    + this.listMailToString(this.recipientsInvalid));
+            String message;
+            if(this.recipientsInvalid.isEmpty()){
+                message = "Your mail was sent successfully!";
+            }else{
+                message = "Your mail was sent successfully! \nBut no adresse found for : "
+                        + this.listMailToString(this.recipientsInvalid);
+            }
+            alert.setContentText(message);
+            alert.show();
+            setChanged();
+            notifyObservers(this);
+        }else{
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("Message not sent! ");
+            alert.setContentText(this.messageRetour);
             alert.show();
             setChanged();
             notifyObservers(this);
         }
     }
 
-    public String listMailToString(List<String> l){
+    private String listMailToString(List<String> l){
         StringBuilder response = new StringBuilder("");
         for (int i = 0; i < l.size(); i++) {
             response.append(l.get(i));
@@ -122,7 +142,8 @@ public class SendAction extends Transaction {
     }
 
     private String buildMail(){
-        StringBuilder mail = new StringBuilder("");
+        StringBuilder mail;
+        mail = new StringBuilder("");
         mail.append("Date: ").append(new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss").format(new Date())).append("\r\n");
         mail.append("Subject: ").append(this.mail.getSubject()).append("\r\n");
         mail.append("From: ").append(this.mail.getSender()).append("\r\n");
@@ -133,7 +154,17 @@ public class SendAction extends Transaction {
         return mail.toString();
     }
 
-    private void sendReset() {
+    private void sendReset(String messageErreur) {
         this.connexion.send(new Message(Command.RST));
+        this.message = this.connexion.receive();
+        if(message.getCommand() ==  Command.OKSMTP){
+            this.connexion.send(new Message(Command.QUIT));
+            this.message = this.connexion.receive();
+            if(message.getCommand() ==  Command.QUITCODE){
+                System.out.println("Deconnection : " + messageErreur);
+                this.messageRetour = messageErreur;
+                //exit(1);
+            }
+        }
     }
 }
