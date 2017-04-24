@@ -19,8 +19,8 @@ public class Settings {
 
     static {
         try {
-            ipServerPop3 = InetAddress.getLocalHost();
-            ipServerSMTP = InetAddress.getLocalHost();
+            ipServerPop3 = InetAddress.getByName("PC-ASUS-Gaetan");
+            ipServerSMTP = InetAddress.getByName("PC-ASUS-Gaetan");
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
