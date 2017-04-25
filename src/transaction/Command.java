@@ -18,7 +18,16 @@ public enum Command {
     QUIT("QUIT"),
     DEFAULT(""),
     EXCEPTION("EXCEPTION"),
-    ERROR("ERR");
+    ERROR("ERR"),
+    ELHO("EHLO"),
+    OKSMTP("250"),
+    MAIL("MAIL"),
+    RCPT("RCPT"),
+    RST("RST"),
+    DATA("DATA"),
+    ERRORSMTP("550"),
+    GETMAIL("354"),
+    QUITCODE("221");
 
     private final String text;
 

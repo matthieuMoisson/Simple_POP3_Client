@@ -1,25 +1,26 @@
 package controller;
 
 
+import connexion.Pop3Connexion;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import logger.LogMessage;
 import logger.LogType;
 import logger.Logger;
 import transaction.Command;
-import sample.Connexion;
-import sample.Message;
+import connexion.Connexion;
+import connexion.Message;
 import sample.Settings;
-import transaction.Authentication;
+import transaction.pop3.Authentication;
 
 import java.io.IOException;
 import java.util.*;
@@ -35,6 +36,9 @@ public class HomeController implements Observer{
     @FXML
     public AnchorPane anchorPane;
 
+    @FXML
+    public Button btn_connect;
+
     private Connexion connexion = null;
     private String timestamp = null;
 
@@ -44,6 +48,13 @@ public class HomeController implements Observer{
 
     @FXML
     public void initialize() {
+        anchorPane.addEventHandler(KeyEvent.KEY_PRESSED, ev -> {
+            if (ev.getCode() == KeyCode.ENTER) {
+                btn_connect.fire();
+                ev.consume();
+            }
+        });
+
         Logger.setLabel(logs);
         openConnection();
     }
@@ -53,7 +64,7 @@ public class HomeController implements Observer{
             this.connexion.close();
         }
         try {
-            this.connexion = Connexion.getInstance();
+            this.connexion = Pop3Connexion.getInstance();
             Message m = this.connexion.receive();
             timestamp = this.connexion.getTimetamp(m);
             Logger.log(new LogMessage(LogType.SUCCESS, m.toString()));
@@ -61,18 +72,6 @@ public class HomeController implements Observer{
 //            e.printStackTrace();
             Logger.log(new LogMessage(e.getMessage()));
         }
-    }
-
-    @FXML
-    public void openSettings() {
-        TextInputDialog dialog = new TextInputDialog(Settings.getHost());
-        dialog.setTitle("Settings");
-        dialog.setHeaderText("Server Settings");
-        dialog.setContentText("Server: ");
-
-        Optional<String> result = dialog.showAndWait();
-        result.ifPresent(Settings::setSettings);
-        openConnection();
     }
 
     @FXML
@@ -117,11 +116,38 @@ public class HomeController implements Observer{
             Authentication transaction = (Authentication) o;
             Message message = transaction.getMessage();
             if (message.getCommand() == Command.OK) {
+                connexion.setCurrentUsername(transaction.getUsername());
                 Logger.log(new LogMessage(LogType.SUCCESS,"Connection accepted"));
                 openMailBox();
             } else {
                 Logger.log(transaction.getMessage().toString());
             }
         }
+    }
+
+    @FXML
+    public void openSettingsPOP3(ActionEvent actionEvent) {
+        TextInputDialog dialog = createDialog(Settings.getHostPOP3(), "Settings POP3", "POP3 Server Settings", "Server: ");
+
+        Optional<String> fullHostPop3 = dialog.showAndWait();
+        fullHostPop3.ifPresent(Settings::setSettingsPop3);
+        openConnection();
+    }
+
+    @FXML
+    public void openSettingsSMTP(ActionEvent actionEvent) {
+        TextInputDialog dialog = createDialog(Settings.getHostSMTP(), "Settings SMTP", "SMTP Server Settings", "Server: ");
+
+        Optional<String> fullHostSMTP = dialog.showAndWait();
+        fullHostSMTP.ifPresent(Settings::setSettingsSmtp);
+
+    }
+
+    private TextInputDialog createDialog(String defaultHost, String title, String header, String content) {
+        TextInputDialog dialog = new TextInputDialog(defaultHost);
+        dialog.setTitle(title);
+        dialog.setHeaderText(header);
+        dialog.setContentText(content);
+        return dialog;
     }
 }

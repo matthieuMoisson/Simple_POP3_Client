@@ -1,6 +1,7 @@
 package controller;
 
 
+import connexion.Pop3Connexion;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,8 +18,10 @@ import javafx.stage.Stage;
 import logger.LogMessage;
 import logger.LogType;
 import logger.Logger;
-import transaction.*;
-import sample.Connexion;
+import connexion.Connexion;
+import transaction.pop3.QuitAction;
+import transaction.pop3.ResetAction;
+import transaction.pop3.StatAction;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -46,7 +49,7 @@ public class MailboxController implements Observer{
     public void initialize() {
         Logger.setLabel(label);
         try {
-            this.connexion = Connexion.getInstance();
+            this.connexion = Pop3Connexion.getInstance();
             runStat();
         } catch (IOException e) {
             e.printStackTrace();
@@ -77,6 +80,8 @@ public class MailboxController implements Observer{
             if (quitAction.isConnexionClosed()) {
                 this.connexion.close();
                 anchorPane.getScene().getWindow().hide();
+                openHome();
+
             } else {
                 Logger.log("Could not handleDisconnect");
             }
@@ -86,10 +91,24 @@ public class MailboxController implements Observer{
         }
     }
 
+    private void openHome() {
+        try {
+            FXMLLoader fxmlLoader= new FXMLLoader(getClass().getResource("../view/home.fxml"));
+            Parent newWindow = fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Home");
+            stage.setScene(new Scene(newWindow, 600, 400));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Logger.log("Could not open Mail");
+        }
+    }
+
     public void handleMouseClickListView(MouseEvent mouseEvent) {
         int idMailClicked = listView.getSelectionModel().getSelectedIndex() + 1;
+        listView.getSelectionModel().clearSelection();
         // Open Mail Screen
-        System.out.println(idMailClicked);
         openMail(idMailClicked);
     }
 
@@ -103,6 +122,9 @@ public class MailboxController implements Observer{
     }
 
     private void openMail(int idMail) {
+
+        if (idMail == 0) return;
+
         try {
 
             FXMLLoader fxmlLoader= new FXMLLoader(getClass().getResource("../view/mail.fxml"));
@@ -120,6 +142,23 @@ public class MailboxController implements Observer{
         }
     }
 
+    private void openNewMail() {
+        try {
+
+            FXMLLoader fxmlLoader= new FXMLLoader(getClass().getResource("../view/newmail.fxml"));
+            Parent newWindow = fxmlLoader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("New Mail");
+            stage.setScene(new Scene(newWindow, 600, 400));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Logger.log("Could not open New Mail");
+        }
+    }
+
     public void handleReset(ActionEvent actionEvent) {
         ResetAction resetAction = new ResetAction(connexion);
         resetAction.addObserver(this);
@@ -131,4 +170,9 @@ public class MailboxController implements Observer{
         statAction.addObserver(this);
         Platform.runLater(statAction);
     }
+
+    public void handleSend(ActionEvent actionEvent) {
+        this.openNewMail();
+    }
+
 }

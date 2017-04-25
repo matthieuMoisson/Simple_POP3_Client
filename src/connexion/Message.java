@@ -1,4 +1,4 @@
-package sample;
+package connexion;
 
 import transaction.Command;
 
@@ -13,6 +13,10 @@ import java.util.List;
 public class Message {
 
     private Command command = Command.DEFAULT;
+
+    public Message(Command data) {
+        this.command = data;
+    }
 
     public Command getCommand() {return command;}
 
@@ -37,10 +41,6 @@ public class Message {
     public Message(Command command, String arg) {
         this(command);
         this.argComplet = arg;
-    }
-
-    Message(Command command) {
-        this.command = command;
     }
 
     private void build(String fullMessage) {

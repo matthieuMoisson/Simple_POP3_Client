@@ -1,7 +1,7 @@
 package transaction;
 
-import sample.Connexion;
-import sample.Message;
+import connexion.Connexion;
+import connexion.Message;
 
 import java.util.Observable;
 
@@ -19,7 +19,7 @@ public abstract class Transaction extends Observable implements Runnable {
         return message;
     }
 
-    Transaction(Connexion connexion) {
+    protected Transaction(Connexion connexion) {
         this.connexion = connexion;
     }
 

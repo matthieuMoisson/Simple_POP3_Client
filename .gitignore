@@ -24,3 +24,10 @@ hs_err_pid*
 /Client.iml
 
 \.idea/workspace\.xml
+out/production/Client/controller/
+out/production/Client/logger/
+out/production/Client/mail/
+out/production/Client/sample/
+out/production/Client/transaction/
+/.idea/workspace.xml
+/out/

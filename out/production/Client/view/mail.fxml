@@ -29,6 +29,7 @@
             <ToolBar prefHeight="40.0" prefWidth="600.0">
               <items>
                 <Button fx:id="deleteBtn" mnemonicParsing="false" onAction="#handleDelete" text="Delete" />
+                  <Button fx:id="replyBtn" layoutX="10.0" layoutY="13.0" mnemonicParsing="false" onAction="#handleReply" text="Reply" />
               </items>
             </ToolBar>
          </children>
